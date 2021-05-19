@@ -5,13 +5,15 @@ import it.tarczynski.konion.price.domain.policy.PriceChangePolicy
 import it.tarczynski.konion.product.domain.ProductStatus.ACTIVE
 import it.tarczynski.konion.product.domain.ProductStatus.NEW
 import it.tarczynski.konion.product.domain.ProductStatus.WITHDRAWN
+import java.lang.IllegalArgumentException
 import java.util.*
 
 enum class ProductStatus {
     NEW, ACTIVE, WITHDRAWN
 }
 
-inline class ProductId(val value: UUID) {
+@JvmInline
+value class ProductId(val value: UUID) {
 
     companion object {
 
@@ -33,7 +35,9 @@ data class Product(
 ) {
 
     fun updatePrice(newPrice: Price, priceChangePolicy: PriceChangePolicy): Product {
-        priceChangePolicy.verify(price, newPrice)
+        if (!priceChangePolicy.isValidPriceChange(price, newPrice)) {
+            throw IllegalArgumentException("Invalid price change from: [$price] to [$newPrice]")
+        }
         return copy(price = newPrice)
     }
 
@@ -44,12 +48,15 @@ data class Product(
         return copy(status = WITHDRAWN)
     }
 
-    fun isActive(): Boolean {
-        return status == ACTIVE && price > Price.zero(price.currency)
+    fun activate(activationPrice: Price): Product {
+        if (activationPrice.isZero()) {
+            throw IllegalArgumentException("Activation price cannot be zero")
+        }
+        return copy(status = ACTIVE, price = activationPrice)
     }
 
-    fun activate(): Product {
-        return copy(status = ACTIVE)
+    fun isAvailableForSale(): Boolean {
+        return status == ACTIVE && price > Price.zero(price.currency)
     }
 
 }

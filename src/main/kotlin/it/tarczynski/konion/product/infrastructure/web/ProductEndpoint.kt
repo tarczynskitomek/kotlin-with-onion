@@ -30,8 +30,11 @@ class ProductEndpoint(
     }
 
     @PostMapping("/{productId}/activate")
-    fun activateProduct(@PathVariable productId: String): ProductResponse {
-        return productFacade.activateProduct(productId)
+    fun activateProduct(
+        @PathVariable productId: String,
+        @RequestBody request: UpdateProductPriceRequest
+    ): ProductResponse {
+        return productFacade.activateProduct(productId, request)
     }
 
     @PostMapping("/{productId}/withdraw")

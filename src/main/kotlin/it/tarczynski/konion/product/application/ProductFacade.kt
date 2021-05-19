@@ -49,9 +49,9 @@ class ProductFacade(
             .let { ProductResponse.from(it) }
     }
 
-    fun activateProduct(rawId: String): ProductResponse {
+    fun activateProduct(rawId: String, activationPrice: UpdateProductPriceRequest): ProductResponse {
         val product = productRepository.getById(rawId.toProductId())
-        return product.activate()
+        return product.activate(activationPrice.newPrice)
             .let { productRepository.save(it) }
             .also { notificationService.productActivated(it) }
             .let { ProductResponse.from(it) }

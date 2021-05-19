@@ -6,13 +6,11 @@ import org.springframework.stereotype.Component
 @Component
 class ComplexPriceChangePolicy : PriceChangePolicy {
 
-    override fun verify(oldPrice: Price, newPrice: Price) {
+    override fun isValidPriceChange(oldPrice: Price, newPrice: Price): Boolean {
         // wykonuje jakąś skomplikowaną logikę, może siega do bazy, albo wykonuje żądanie do innej uslugi
-        if (isNewPriceLower(oldPrice, newPrice)) {
-            throw IllegalArgumentException("We only make our prices higher!")
-        }
+        return isNewPriceHigherOrEqual(oldPrice, newPrice)
     }
 
-    private fun isNewPriceLower(oldPrice: Price, newPrice: Price) =
-        oldPrice > newPrice
+    private fun isNewPriceHigherOrEqual(oldPrice: Price, newPrice: Price) =
+        newPrice >= oldPrice
 }

@@ -19,8 +19,13 @@ data class Price(
         return this.value.compareTo(other.value)
     }
 
+    fun isZero(): Boolean {
+        return BigDecimal.ZERO == value
+    }
+
     companion object {
 
+        @JvmStatic
         fun zero(currency: String): Price {
             return Price(BigDecimal.ZERO, currency)
         }

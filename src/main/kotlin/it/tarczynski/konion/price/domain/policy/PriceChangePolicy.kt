@@ -4,5 +4,5 @@ import it.tarczynski.konion.price.domain.Price
 
 interface PriceChangePolicy {
 
-    fun verify(oldPrice: Price, newPrice: Price)
+    fun isValidPriceChange(oldPrice: Price, newPrice: Price): Boolean
 }
