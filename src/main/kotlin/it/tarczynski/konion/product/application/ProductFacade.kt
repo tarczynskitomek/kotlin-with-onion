@@ -17,14 +17,17 @@ class ProductFacade(
     private val notificationService: ProductNotificationService,
     private val priceChangePolicy: PriceChangePolicy
 ) {
+
     fun listProducts(): ListProductResponse {
-        val products: List<ProductResponse> = productRepository.findAll().map { ProductResponse.from(it) }
+        val products: List<Product> = productRepository.findAll()
         return ListProductResponse.from(products)
     }
 
     fun createProduct(request: CreateProductRequest): ProductResponse {
-        val product = request.toNewProduct()
-        return ProductResponse.from(store(product))
+        return request.toNewProduct()
+            .let { productRepository.save(it) }
+            .also { notificationService.productCreated(it) }
+            .let { ProductResponse.from(it) }
     }
 
     fun updateProductPrice(
@@ -54,7 +57,4 @@ class ProductFacade(
             .let { ProductResponse.from(it) }
     }
 
-    private fun store(product: Product): Product {
-        return productRepository.save(product).also { notificationService.productCreated(it) }
-    }
 }

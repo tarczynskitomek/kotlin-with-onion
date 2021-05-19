@@ -1,6 +1,6 @@
 package it.tarczynski.konion.product.service
 
-import it.tarczynski.konion.config.loggerFor
+import it.tarczynski.konion.core.config.loggerFor
 import it.tarczynski.konion.product.domain.Product
 import org.slf4j.Logger
 import org.springframework.stereotype.Component

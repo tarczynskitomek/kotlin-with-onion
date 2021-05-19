@@ -3,11 +3,6 @@ package it.tarczynski.konion.price.domain
 import java.lang.IllegalStateException
 import java.math.BigDecimal
 
-
-fun BigDecimal.toPrice(): Price {
-    return Price(this)
-}
-
 fun BigDecimal.toPrice(currency: String): Price {
     return Price(this, currency)
 }
